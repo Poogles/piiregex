@@ -1,30 +1,32 @@
-PiiRegex
-========
+# PiiRegex  [![Build Status](https://travis-ci.org/Poogles/piiregex.svg?branch=master)](https://travis-ci.org/Poogles/piiregex)
 
 This wouldn't have been possible with [CommonRegex](https://github.com/madisonmay/CommonRegex).  Thanks!
 
-Attempt to find PII in regex.
+Attempt to find PII in regex either using a specific PII type, or search through
+everything available.
 
 Pull requests welcome!
 
+Install via pip.
+```sh
+pip install piiregex
+```
 
-Installation
--------
-Install via pip
 
-    sudo pip install piiregex
-    
-or via setup.py
+Tests are available through pytest.
 
-    python setup.py install
+```sh
+pip install -r dev_requirements.text
+pytest -vv
+```
 
 
 Usage
 ------
 
 ```python    
->>> from commonregex import CommonRegex
->>> parsed_text = CommonRegex("""John, please get that article on www.linkedin.com to me by 5:00PM 
+>>> from piiregex import PiiRegex
+>>> parsed_text = PiiRegex("""John, please get that article on www.linkedin.com to me by 5:00PM 
                                on Jan 9th 2012. 4:00 would be ideal, actually. If you have any 
                                questions, You can reach me at (519)-236-2723x341 or get in touch with
                                my associate at harold.smith@gmail.com""")
@@ -32,8 +34,6 @@ Usage
 ['5:00PM', '4:00']
 >>> parsed_text.dates
 ['Jan 9th 2012']
->>> parsed_text.links
-['www.linkedin.com']
 >>> parsed_text.phones
 ['(519)-236-2727']
 >>> parsed_text.phones_with_exts
@@ -42,10 +42,10 @@ Usage
 ['harold.smith@gmail.com']
 ```
     
-Alternatively, you can generate a single CommonRegex instance and use it to parse multiple segments of text.
+Alternatively, you can generate a single PiiRegex instance and use it to parse multiple segments of text.
 
 ```python
->>> parser = CommonRegex()
+>>> parser = PiiRegex()
 >>> parser.times("When are you free?  Do you want to meet up for coffee at 4:00?")
 ['4:00']
 ```
@@ -53,7 +53,7 @@ Alternatively, you can generate a single CommonRegex instance and use it to pars
 Finally, all regular expressions used are publicly exposed. 
 
 ```python
->>> from commonregex import email
+>>> from piiregex import email
 >>> import re
 >>> text = "...get in touch with my associate at harold.smith@gmail.com"
 >>> re.sub(email, "anon@example.com", text)
@@ -61,16 +61,25 @@ Finally, all regular expressions used are publicly exposed.
 ```
 
 ```python
->>> from commonregex import time
+>>> from piiregex import time
 >>> for m in time.finditer("Does 6:00 or 7:00 work better?"):
->>>     print m.start(), m.group()
+>>>     print(m.start(), m.group())
 5 6:00 
 13 7:00 
 ```
 
-    
+Most importantly (for our use case) any_match iterates through all regexes to
+match anything.
+
+```python
+>>> from piiregex import PiiRegex
+>>> parsed_text = PiiRegex("07123 123123") # should match a UK phone number. 
+>>> parsed_text.any_match()
+True
+```
+
 Please note that this module is currently English/US and UK specific.  Due to
-the European nature of GDPR though this is being expanded.
+the European nature of GDPR though this is being expanded.  PRs are welcome.
 
 
 Supported Methods/Attributes
@@ -89,3 +98,5 @@ Supported Methods/Attributes
   - `obj.credit_cards`, `obj.credit_cards()`
   - `obj.btc_addresses`, `obj.btc_addresses()`
   - `obj.street_addresses`, `obj.street_addresses()`
+  - `obj.postcodes`, `obj.postcodes()`
+  - `obj.ukphones`, `obj.ukphones()`
