@@ -75,6 +75,7 @@ class PiiRegex(object):
     def __init__(self, text=""):
         self.text = text
 
+        # Build class attributes of callables.
         for k, v in regexes.items():
             setattr(self, k, regex(self, v)(self))
 
@@ -84,12 +85,23 @@ class PiiRegex(object):
                 setattr(self, key, method())
 
     def any_match(self, text=""):
-        """Scan through all available matches and try to find """
-        matches = []
+        """Scan through all available matches and try to match.
+        """
         if text:
             self.text = text
 
+            # Regenerate class attribute callables.
+            for k, v in regexes.items():
+                setattr(self, k, regex(self, v)(self))
+            for key in regexes.keys():
+                method = getattr(self, key)
+                setattr(self, key, method())
+
+        matches = []
         for match in regexes.keys():
-            if getattr(self, match)():
+            # If we've got a result, add it to matches.
+            if getattr(self, match):
                 matches.append(match)
+
         return True if matches else False
+

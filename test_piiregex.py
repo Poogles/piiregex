@@ -172,3 +172,13 @@ def test_any_match(pii_regex):
     assert pii_regex.any_match('07123 123123') is True
     # This should match nothing.
     assert pii_regex.any_match('asdasdasdasdasd') is False
+
+
+def test_any_match_using_init_method():
+    # This matches a phone number.
+    parsed_text = PiiRegex("07123 123123")
+    assert parsed_text.any_match() is True
+    # This should match nothing.
+    parsed_text = PiiRegex('asdasdasdasdasd')
+    assert parsed_text.any_match() is False
+
