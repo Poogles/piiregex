@@ -1,6 +1,6 @@
 # PiiRegex  [![Build Status](https://travis-ci.org/Poogles/piiregex.svg?branch=master)](https://travis-ci.org/Poogles/piiregex)
 
-This wouldn't have been possible with [CommonRegex](https://github.com/madisonmay/CommonRegex).  Thanks!
+This wouldn't have been possible without [CommonRegex](https://github.com/madisonmay/CommonRegex).  Thanks!
 
 Attempt to find PII in regex either using a specific PII type, or search through
 everything available.
