@@ -76,13 +76,10 @@ class PiiRegex(object):
         self.text = text
 
         # Build class attributes of callables.
-        for k, v in regexes.items():
-            setattr(self, k, regex(self, v)(self))
+        self.__build_regex_class_attributes()
 
         if text:
-            for key in regexes.keys():
-                method = getattr(self, key)
-                setattr(self, key, method())
+            self.__build_class_attributes_callables()
 
     def any_match(self, text=""):
         """Scan through all available matches and try to match.
@@ -91,11 +88,8 @@ class PiiRegex(object):
             self.text = text
 
             # Regenerate class attribute callables.
-            for k, v in regexes.items():
-                setattr(self, k, regex(self, v)(self))
-            for key in regexes.keys():
-                method = getattr(self, key)
-                setattr(self, key, method())
+            self.__build_regex_class_attributes()
+            self.__build_class_attributes_callables()
 
         matches = []
         for match in regexes.keys():
@@ -105,3 +99,13 @@ class PiiRegex(object):
 
         return True if matches else False
 
+    def __build_regex_class_attributes(self):
+        """Build regex class attributes."""
+        for k, v in regexes.items():
+            setattr(self, k, regex(self, v)(self))
+
+    def __build_class_attributes_callables(self):
+        """Build callable class attributes."""
+        for key in regexes.keys():
+            method = getattr(self, key)
+            setattr(self, key, method())
