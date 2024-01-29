@@ -82,8 +82,12 @@ class PiiRegex(object):
             self.__build_class_attributes_callables()
 
     def any_match(self, text=""):
-        """Scan through all available matches and try to match.
+        """Scan through all available regexes and return whether we found any.
         """
+        return True if self.matches(text=text) else False
+
+    def matches(self, text=""):
+        """Scan through all available regexes and return a list of matches."""
         if text:
             self.text = text
 
@@ -91,13 +95,12 @@ class PiiRegex(object):
             self.__build_regex_class_attributes()
             self.__build_class_attributes_callables()
 
-        matches = []
+        results = []
         for match in regexes.keys():
-            # If we've got a result, add it to matches.
+            # If we've got a match, add it to results.
             if getattr(self, match):
-                matches.append(match)
-
-        return True if matches else False
+                results.append(match)
+        return results
 
     def __build_regex_class_attributes(self):
         """Build regex class attributes."""

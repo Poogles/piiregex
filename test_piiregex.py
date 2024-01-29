@@ -182,3 +182,24 @@ def test_any_match_using_init_method():
     parsed_text = PiiRegex('asdasdasdasdasd')
     assert parsed_text.any_match() is False
 
+
+def test_matches(pii_regex):
+    # This matches a phone number and a zip code.
+    matches = pii_regex.matches('07123 123123')
+    assert len(matches) == 2
+    assert 'ukphones' in matches
+    assert 'zip_codes' in matches
+    # This should match nothing.
+    assert pii_regex.matches('asdasdasdasdasd') == []
+
+
+def test_matches_using_init_method():
+    # This matches a phone number and a zip code.
+    parsed_text = PiiRegex('07123 123123')
+    matches = parsed_text.matches()
+    assert len(matches) == 2
+    assert 'ukphones' in matches
+    assert 'zip_codes' in matches
+    # This should match nothing.
+    parsed_text = PiiRegex('asdasdasdasdasd')
+    assert parsed_text.matches() == []
